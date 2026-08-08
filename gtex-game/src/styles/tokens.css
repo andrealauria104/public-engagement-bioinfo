@@ -1,0 +1,83 @@
+:root {
+  /* palette -- white / very light blue, colorblind-safe (Okabe-Ito
+     blue/reddish-purple pair for UI signal, distinguishable under
+     protanopia/deuteranopia/tritanopia) */
+  --paper: #f5f9fc;
+  --panel: #ffffff;
+  --panel-raised: #eaf1f8;
+  --panel-border: #d8e4ee;
+  --ink: #1e2733;
+  --ink-dim: #57626e;
+  --graphite: #8b95a1;
+  --probe-blue: #0072b2;
+  --probe-blue-dim: rgba(0, 114, 178, 0.14);
+  --probe-rose: #cc79a7;
+  --probe-rose-dim: rgba(204, 121, 167, 0.16);
+
+  /* type -- Arial everywhere, for maximum universal legibility */
+  --font-display: Arial, Helvetica, sans-serif;
+  --font-mono: Arial, Helvetica, sans-serif;
+  --font-body: Arial, Helvetica, sans-serif;
+
+  --radius-panel: 16px;
+  --radius-chip: 10px;
+
+  --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 8px 20px rgba(30, 39, 51, 0.08);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body,
+#root {
+  height: 100%;
+}
+
+body {
+  margin: 0;
+  background: var(--paper);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: 16px;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  font-weight: 700;
+  margin: 0;
+}
+
+.mono {
+  font-family: var(--font-mono);
+  letter-spacing: 0.01em;
+}
+
+.eyebrow {
+  font-family: var(--font-mono);
+  font-size: 12.5px;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+}
+
+button {
+  font-family: inherit;
+}
+
+:focus-visible {
+  outline: 3px solid var(--probe-blue);
+  outline-offset: 2px;
+}
+
+/* desktop: fixed-viewport, no page scroll -- everything fits in one screen */
+@media (min-width: 1081px) {
+  html,
+  body {
+    overflow: hidden;
+  }
+}
