@@ -1,6 +1,7 @@
-import { useCallback, useMemo, useRef, useState } from "react";
-import { generateGtexData } from "./data/generateData";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { loadRealGtexData } from "./data/loadRealData";
 import { useGameState } from "./hooks/useGameState";
+import { playCorrectSound, playIncorrectSound } from "./audio/sfx";
 import Header from "./components/Header";
 import SpecimenTray from "./components/SpecimenTray";
 import AnatomyStage from "./components/AnatomyStage";
@@ -9,7 +10,9 @@ import Toast from "./components/Toast";
 import RoundSummary from "./components/RoundSummary";
 import DragGhost from "./components/DragGhost";
 
-const DATA = generateGtexData();
+const DATA = loadRealGtexData();
+const MAX_SIGNAL = Math.max(...DATA.genes.map((g) => Math.max(...g.data)));
+const MUTE_STORAGE_KEY = "signal-match-muted";
 
 export default function App() {
   const { samples, genes, tissueColors, tissueOrder } = DATA;
@@ -19,7 +22,22 @@ export default function App() {
 
   const [drag, setDrag] = useState(null); // { gene, x, y }
   const [hoveredTissue, setHoveredTissue] = useState(null);
+  const [muted, setMuted] = useState(() => {
+    try {
+      return localStorage.getItem(MUTE_STORAGE_KEY) === "1";
+    } catch {
+      return false;
+    }
+  });
   const draggingRef = useRef(false);
+
+  useEffect(() => {
+    try {
+      localStorage.setItem(MUTE_STORAGE_KEY, muted ? "1" : "0");
+    } catch {
+      // ignore (private browsing / storage disabled)
+    }
+  }, [muted]);
 
   const handleDrop = useCallback(
     (tissue) => {
@@ -27,8 +45,12 @@ export default function App() {
       const result = submitDrop(tissue);
       if (!result) return;
       setHoveredTissue(null);
+      if (!muted) {
+        if (result.correct) playCorrectSound();
+        else playIncorrectSound();
+      }
     },
-    [currentGene, lastResult, submitDrop]
+    [currentGene, lastResult, submitDrop, muted]
   );
 
   const onPointerDownCard = useCallback(
@@ -70,7 +92,7 @@ export default function App() {
   const resultState = useMemo(() => {
     if (!lastResult) return null;
     const hintTissue = lastResult.correct ? lastResult.correctTissue : lastResult.bestTissue;
-    const intensity = lastResult.correct ? lastResult.droppedMean / 12 : 0;
+    const intensity = lastResult.correct ? lastResult.droppedMean / MAX_SIGNAL : 0;
     return {
       status: lastResult.correct ? "correct" : "incorrect",
       tissue: lastResult.droppedTissue,
@@ -81,7 +103,7 @@ export default function App() {
 
   return (
     <div className="app">
-      <Header roundNumber={roundNumber} roundLength={roundLength} score={score} phase={phase} />
+      <Header roundNumber={roundNumber} roundLength={roundLength} score={score} phase={phase} muted={muted} onToggleMuted={() => setMuted((m) => !m)} />
 
       <main className="app-main">
         {phase === "playing" ? (

@@ -42,6 +42,8 @@ export const STRINGS = {
     toReview: "To review",
     missItem: "{symbol} belongs in {tissue}, not {dropped}",
     playAgain: "Play again",
+    muteSound: "Mute sound",
+    unmuteSound: "Unmute sound",
   },
   it: {
     appTitle: "Signal Match",
@@ -75,6 +77,8 @@ export const STRINGS = {
     toReview: "Da rivedere",
     missItem: "{symbol} appartiene a {tissue}, non a {dropped}",
     playAgain: "Gioca ancora",
+    muteSound: "Disattiva audio",
+    unmuteSound: "Attiva audio",
   },
   fr: {
     appTitle: "Signal Match",
@@ -108,6 +112,8 @@ export const STRINGS = {
     toReview: "À revoir",
     missItem: "{symbol} appartient à {tissue}, pas à {dropped}",
     playAgain: "Rejouer",
+    muteSound: "Couper le son",
+    unmuteSound: "Activer le son",
   },
 };
 

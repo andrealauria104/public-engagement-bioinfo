@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useI18n } from "../i18n/LanguageContext";
 import { LANGUAGES } from "../i18n/translations";
 
-export default function Header({ roundNumber, roundLength, score, phase }) {
+export default function Header({ roundNumber, roundLength, score, phase, muted, onToggleMuted }) {
   const [showInfo, setShowInfo] = useState(false);
   const { lang, setLang, t } = useI18n();
 
@@ -37,6 +37,11 @@ export default function Header({ roundNumber, roundLength, score, phase }) {
           </button>
         ))}
       </div>
+
+      <button className="mute-btn" aria-pressed={muted} onClick={onToggleMuted} title={t(muted ? "unmuteSound" : "muteSound")}>
+        {muted ? "🔇" : "🔊"}
+        <span className="sr-only">{t(muted ? "unmuteSound" : "muteSound")}</span>
+      </button>
 
       <button className="info-btn" aria-expanded={showInfo} onClick={() => setShowInfo((v) => !v)}>
         ?

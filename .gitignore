@@ -8,3 +8,8 @@
 # Node
 node_modules/
 dist/
+
+# Raw/intermediate GTEx data (large, regeneratable / public download) --
+# only gtex-data/src/ (the R scripts) is version-controlled.
+gtex-data/data/
+gtex-data/results/

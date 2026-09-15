@@ -27,7 +27,7 @@ function clamp(v, lo, hi) {
 const TISSUES = [
   { name: "Liver", color: "#882255", organ: "liver", markers: [["ALB", "Albumin"], ["APOB", "Apolipoprotein B"], ["CYP3A4", "Cytochrome P450 3A4"], ["TTR", "Transthyretin"], ["SERPINA1", "Alpha-1 Antitrypsin"]] },
   { name: "Brain", color: "#332288", organ: "brain", markers: [["GFAP", "Glial Fibrillary Acidic Protein"], ["SNAP25", "Synaptosome Assoc. Protein 25"], ["MBP", "Myelin Basic Protein"], ["SYT1", "Synaptotagmin 1"], ["RBFOX3", "RNA Binding Fox-1 Homolog 3"]] },
-  { name: "Heart", color: "#CC6677", organ: "heart", markers: [["MYH6", "Myosin Heavy Chain 6"], ["TNNT2", "Troponin T2, Cardiac"], ["NPPA", "Natriuretic Peptide A"], ["ACTC1", "Actin, Cardiac Muscle 1"], ["MYL2", "Myosin Light Chain 2"]] },
+  { name: "Heart", color: "#CC6677", organ: "heart", markers: [["MYH6", "Myosin Heavy Chain 6"], ["TNNT2", "Troponin T2, Cardiac"], ["NPPA", "Natriuretic Peptide A"], ["ACTC1", "Actin, Cardiac Muscle 1"], ["TNNI3", "Troponin I3, Cardiac"]] },
   { name: "Kidney", color: "#44AA99", organ: "kidney", markers: [["UMOD", "Uromodulin"], ["AQP2", "Aquaporin 2"], ["SLC12A1", "Na-K-Cl Cotransporter"], ["NPHS2", "Podocin"], ["CUBN", "Cubilin"]] },
   { name: "Lung", color: "#88CCEE", organ: "lung", markers: [["SFTPC", "Surfactant Protein C"], ["SFTPB", "Surfactant Protein B"], ["SCGB1A1", "Secretoglobin 1A1"], ["NAPSA", "Napsin A"], ["AGER", "Advanced Glycosylation End-Product Receptor"]] },
   { name: "Pancreas", color: "#E69F00", organ: "pancreas", markers: [["INS", "Insulin"], ["GCG", "Glucagon"], ["PRSS1", "Trypsinogen"], ["AMY2A", "Pancreatic Amylase"], ["SST", "Somatostatin"]] },
@@ -37,6 +37,20 @@ const TISSUES = [
   { name: "Thyroid", color: "#117733", organ: "thyroid", markers: [["TG", "Thyroglobulin"], ["TPO", "Thyroid Peroxidase"], ["TSHR", "Thyroid Stimulating Hormone Receptor"], ["SLC5A5", "Sodium/Iodide Cotransporter"], ["PAX8", "Paired Box 8"]] },
 ];
 
+// Presentation metadata (colors, organ keys, tissue order) shared by both the
+// synthetic generator below and the real-data loader in loadRealData.js --
+// kept here as the single source of truth so the two data paths never drift
+// into mismatched palettes.
+export function tissueMeta() {
+  const tissueColors = {};
+  const tissueOrgan = {};
+  TISSUES.forEach((t) => {
+    tissueColors[t.name] = t.color;
+    tissueOrgan[t.name] = t.organ;
+  });
+  return { tissueColors, tissueOrgan, tissueOrder: TISSUES.map((t) => t.name) };
+}
+
 export function generateGtexData(seed = 42) {
   const rng = mulberry32(seed);
   const samplesPerTissue = 80;
@@ -44,12 +58,9 @@ export function generateGtexData(seed = 42) {
   const blobSpread = 1.15;
 
   const samples = [];
-  const tissueColors = {};
-  const tissueOrgan = {};
+  const { tissueColors, tissueOrgan } = tissueMeta();
 
   TISSUES.forEach((t, ti) => {
-    tissueColors[t.name] = t.color;
-    tissueOrgan[t.name] = t.organ;
     const angle = (2 * Math.PI * ti) / TISSUES.length;
     const cx = blobRadius * Math.cos(angle);
     const cy = blobRadius * Math.sin(angle);

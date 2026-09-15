@@ -133,7 +133,8 @@
   box-shadow: 0 1px 3px rgba(30, 39, 51, 0.15);
 }
 
-.info-btn {
+.info-btn,
+.mute-btn {
   width: 30px;
   height: 30px;
   border-radius: 50%;
@@ -146,9 +147,14 @@
   font-size: 14px;
 }
 
-.info-btn:hover {
+.info-btn:hover,
+.mute-btn:hover {
   border-color: var(--probe-blue);
   color: var(--probe-blue);
+}
+
+.mute-btn {
+  font-size: 15px;
 }
 
 .info-popover {

@@ -197,7 +197,7 @@ const ORGANS = [
   { tissue: "Brain", label: "Brain", Shape: Brain, cx: 150, cy: 66, bx: 34, by: 30 },
   { tissue: "Thyroid", label: "Thyroid", Shape: Thyroid, cx: 150, cy: 122, bx: 18, by: 11 },
   { tissue: "Lung", label: "Lung", Shape: Lungs, cx: 150, cy: 196, bx: 62, by: 42, labelDy: 46 },
-  { tissue: "Heart", label: "Heart", Shape: Heart, cx: 140, cy: 234, bx: 20, by: 32 },
+  { tissue: "Heart", label: "Heart", Shape: Heart, cx: 140, cy: 234, bx: 20, by: 32, labelDx: -46, labelDy: -8 },
   { tissue: "Blood", label: "Blood", Shape: Blood, cx: 184, cy: 152, bx: 16, by: 16 },
   { tissue: "Liver", label: "Liver", Shape: Liver, cx: 190, cy: 268, bx: 40, by: 24 },
   { tissue: "Pancreas", label: "Pancreas", Shape: Pancreas, cx: 138, cy: 292, bx: 34, by: 14 },
@@ -212,6 +212,10 @@ export default function AnatomyStage({ hoveredTissue, resultState, onOrganActiva
   return (
     <div className="anatomy-stage" aria-label={t("tissueMapAria")}>
       <svg viewBox="0 0 300 772" className="anatomy-svg" role="group">
+        {/* Widen the whole figure ~12% horizontally about the body's central
+            axis (x=150) -- torso/limbs read as slightly broader and organs
+            gain a bit more lateral breathing room. */}
+        <g transform="translate(150 0) scale(1.12 1) translate(-150 0)">
         <BodyFigure />
 
         {ORGANS.map((organ) => {
@@ -262,12 +266,17 @@ export default function AnatomyStage({ hoveredTissue, resultState, onOrganActiva
                   <SignalDots cx={organ.cx} cy={organ.cy} rx={organ.bx + 6} ry={organ.by + 6} count={dotCount} seed={organ.tissue} />
                 </>
               )}
-              <text x={organ.cx} y={organ.cy + organ.by + (organ.labelDy ?? 16)} className="organ-label mono">
+              <text
+                x={organ.cx + (organ.labelDx ?? 0)}
+                y={organ.cy + organ.by + (organ.labelDy ?? 16)}
+                className="organ-label mono"
+              >
                 {label}
               </text>
             </g>
           );
         })}
+        </g>
       </svg>
     </div>
   );
