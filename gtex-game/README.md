@@ -15,6 +15,7 @@ npm run preview   # serve the production build locally
 
 ## How it works
 
+- **Intro**: three short click-through slides (genes vs. tissues, what GTEx is, how to play) with Next / Back / Skip, ending on a Start button. The language switch is already available here; "Play again" skips the intro.
 - **Gene tray** (left): the current round's gene, drag it onto the tissue map (mouse or touch - implemented with pointer events, not native HTML5 drag-and-drop, so it works on touchscreens). Tab + Enter also works for keyboard-only play.
 - **Anatomy stage** (center): a hand-drawn body figure with 10 organ hotspots. A correct drop pulses the organ and reveals a density of "signal dots" scaled to that gene's real mean expression there; a miss shows a dashed outline on the organ where the gene actually belongs. A short synthesized chime/buzz plays on drop (Web Audio, no audio assets); the speaker icon in the header mutes it, remembered across reloads.
 - **UMAP readout** (right): a live Plotly scatter plot recoloring by the current gene's expression across all real samples, so the visual result of a drop is backed by an actual expression pattern, not a canned animation.

@@ -20,7 +20,7 @@ export default function Header({ roundNumber, roundLength, score, phase, muted, 
             <span className="app-header__dot" aria-hidden="true">·</span>
             <span>{t("score", { score })}</span>
           </>
-        ) : (
+        ) : phase === "intro" ? null : (
           <span>{t("finalScore", { score, total: roundLength })}</span>
         )}
       </div>

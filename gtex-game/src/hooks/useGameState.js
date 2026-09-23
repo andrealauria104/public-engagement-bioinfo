@@ -32,7 +32,7 @@ export function useGameState({ genes, samples, tissueOrder }) {
   const [score, setScore] = useState(0);
   const [history, setHistory] = useState([]);
   const [lastResult, setLastResult] = useState(null);
-  const [phase, setPhase] = useState("playing"); // "playing" | "summary"
+  const [phase, setPhase] = useState("intro"); // "intro" | "playing" | "summary"
 
   const currentGene = deck[roundIndex] ?? null;
 
@@ -82,6 +82,8 @@ export function useGameState({ genes, samples, tissueOrder }) {
     });
   }, []);
 
+  const start = useCallback(() => setPhase("playing"), []);
+
   const restart = useCallback(() => {
     setDeck(dealRound(tissueOrder, genesByTissue));
     setRoundIndex(0);
@@ -102,6 +104,7 @@ export function useGameState({ genes, samples, tissueOrder }) {
     phase,
     submitDrop,
     nextRound,
+    start,
     restart,
   };
 }

@@ -8,6 +8,7 @@ import AnatomyStage from "./components/AnatomyStage";
 import UmapReadout from "./components/UmapReadout";
 import Toast from "./components/Toast";
 import RoundSummary from "./components/RoundSummary";
+import IntroScreen from "./components/IntroScreen";
 import DragGhost from "./components/DragGhost";
 
 const DATA = loadRealGtexData();
@@ -18,7 +19,7 @@ export default function App() {
   const { samples, genes, tissueColors, tissueOrder } = DATA;
 
   const game = useGameState({ genes, samples, tissueOrder });
-  const { currentGene, currentGeneStats, roundNumber, roundLength, score, history, lastResult, phase, submitDrop, nextRound, restart } = game;
+  const { currentGene, currentGeneStats, roundNumber, roundLength, score, history, lastResult, phase, submitDrop, nextRound, start, restart } = game;
 
   const [drag, setDrag] = useState(null); // { gene, x, y }
   const [hoveredTissue, setHoveredTissue] = useState(null);
@@ -85,6 +86,12 @@ export default function App() {
     [handleDrop, lastResult]
   );
 
+  const handleStart = useCallback(() => {
+    // First user gesture also unlocks the AudioContext for later feedback tones.
+    if (!muted) playCorrectSound();
+    start();
+  }, [muted, start]);
+
   const handleOrganHover = useCallback((tissue) => {
     if (!draggingRef.current) setHoveredTissue(tissue);
   }, []);
@@ -106,7 +113,9 @@ export default function App() {
       <Header roundNumber={roundNumber} roundLength={roundLength} score={score} phase={phase} muted={muted} onToggleMuted={() => setMuted((m) => !m)} />
 
       <main className="app-main">
-        {phase === "playing" ? (
+        {phase === "intro" ? (
+          <IntroScreen onStart={handleStart} />
+        ) : phase === "playing" ? (
           <>
             <SpecimenTray
               key={currentGene?.symbol}
