@@ -99,8 +99,8 @@
 
 .app-header__sub {
   color: var(--ink-dim);
-  font-size: var(--text-xs);
-  letter-spacing: 0.08em;
+  font-size: var(--text-xl);
+  letter-spacing: 0;
 }
 
 .app-header__status {
