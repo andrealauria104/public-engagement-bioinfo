@@ -23,6 +23,23 @@
   --radius-chip: 10px;
 
   --shadow-panel: 0 1px 0 rgba(255, 255, 255, 0.6) inset, 0 8px 20px rgba(30, 39, 51, 0.08);
+
+  /* spacing scale -- 4px base, used for padding/gap/margin throughout */
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 20px;
+  --space-6: 24px;
+  --space-7: 32px;
+
+  /* type scale -- major second-ish steps tuned for a data-dense screen */
+  --text-2xl: 32px;
+  --text-xl: 22px;
+  --text-lg: 17px;
+  --text-md: 15px;
+  --text-sm: 13.5px;
+  --text-xs: 12px;
 }
 
 * {
@@ -55,6 +72,7 @@ h3 {
 .mono {
   font-family: var(--font-mono);
   letter-spacing: 0.01em;
+  font-variant-numeric: tabular-nums;
 }
 
 .eyebrow {

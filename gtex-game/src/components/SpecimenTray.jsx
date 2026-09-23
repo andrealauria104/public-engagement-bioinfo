@@ -57,7 +57,7 @@ export default function SpecimenTray({ gene, stats, onPointerDownCard, disabled,
         )}
       </div>
 
-      <img className="tray-logo" src="/logo-unito.png" alt="Università di Torino" />
+      <img className="tray-logo" src={`${import.meta.env.BASE_URL}logo-unito.png`} alt="Università di Torino" />
     </div>
   );
 }
