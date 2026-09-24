@@ -29,8 +29,7 @@ npm run preview   # serve the production build locally
 - Subsamples ~90 samples/tissue and runs `uwot::umap` jointly across all of them for the 2D layout.
 - Reads from `gtex-data/results/gtex.summarized.experiment.rds` (not checked in - see `gtex-data/` for the upstream preprocessing scripts and raw GTEx files, which are gitignored due to size).
 
-`src/data/generateData.js` still contains the original deterministic synthetic generator (seeded PRNG, same shape) as an offline/dev fallback - `src/data/loadRealData.js` is what the app actually uses, merging the real JSON with the shared tissue color/organ metadata in `generateData.js`. See `draft/GTEX_DEMO_STRATEGY.md` (repo root) for the original data-format plan this followed.
-
+`src/data/generateData.js` still contains the original deterministic synthetic generator (seeded PRNG, same shape) as an offline/dev fallback - `src/data/loadRealData.js` is what the app actually uses, merging the real JSON with the shared tissue color/organ metadata in `generateData.js`.
 ## Stack
 
 React 19 + Vite, Plotly.js for the UMAP plots, inline SVG for the anatomy diagram, no CSS framework (hand-written design tokens in `src/styles/tokens.css`). No backend - the production build is a static, offline-capable bundle.
