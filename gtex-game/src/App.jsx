@@ -134,6 +134,7 @@ export default function App() {
               onOrganActivate={handleDrop}
               onOrganHover={handleOrganHover}
               disabled={!!lastResult}
+              tissueColors={tissueColors}
             />
 
             <UmapReadout

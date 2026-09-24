@@ -482,13 +482,16 @@
   fill: var(--ink-dim);
   font-family: var(--font-mono);
   font-size: 11.5px;
-  text-anchor: middle;
   pointer-events: none;
   opacity: 0.9;
   paint-order: stroke;
   stroke: var(--panel);
   stroke-width: 3px;
   stroke-linejoin: round;
+}
+
+.organ-label-dot {
+  font-size: 13px;
 }
 
 .organ-hotspot:hover .organ-halo,

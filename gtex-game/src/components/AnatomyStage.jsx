@@ -85,7 +85,7 @@ function SignalDots({ cx, cy, rx, ry, count, seed }) {
   );
 }
 
-export default function AnatomyStage({ hoveredTissue, resultState, onOrganActivate, onOrganHover, disabled }) {
+export default function AnatomyStage({ hoveredTissue, resultState, onOrganActivate, onOrganHover, disabled, tissueColors }) {
   const { t, tTissue } = useI18n();
 
   return (
@@ -147,6 +147,12 @@ export default function AnatomyStage({ hoveredTissue, resultState, onOrganActiva
                 textAnchor={organ.anchor ?? "middle"}
                 className="organ-label mono"
               >
+                {/* Tissue-colour key dot: ties the label to the UMAP legend colour. */}
+                {tissueColors?.[organ.tissue] && (
+                  <tspan className="organ-label-dot" style={{ fill: tissueColors[organ.tissue] }}>
+                    {"● "}
+                  </tspan>
+                )}
                 {label}
               </text>
             </g>
