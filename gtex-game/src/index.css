@@ -450,33 +450,32 @@
   overflow: visible;
 }
 
-.body-part {
-  fill: var(--panel-raised);
+.body-figure,
+.organ-img {
+  pointer-events: none;
+}
+
+/* Fade the skeleton back so the organs read as the foreground. */
+.body-figure {
+  opacity: 0.4;
 }
 
 .organ-hotspot {
   cursor: pointer;
 }
 
-.organ-hotspot :is(ellipse, rect, circle, path):not(.signal-dot):not(.organ-detail) {
-  fill: #d3e3f0;
-  stroke: #9fb9cf;
-  stroke-width: 1.5;
-  transition: fill 0.18s ease, stroke 0.18s ease, transform 0.18s ease;
+.organ-hotspot:focus {
+  outline: none;
 }
 
-.organ-hotspot .organ-detail {
-  fill: none;
-  stroke: #b2c6d8;
+/* Halo behind each organ: invisible at rest but still the hit target, so the
+   transparent corners of the PNGs never steal clicks from a neighbour. */
+.organ-hotspot .organ-halo {
+  fill: transparent;
+  stroke: transparent;
   stroke-width: 1.5;
-  stroke-linecap: round;
-  pointer-events: none;
-}
-
-.organ-hotspot .organ-patch {
-  fill: #d3e3f0;
-  stroke: #9fb9cf;
-  stroke-dasharray: 3 3;
+  pointer-events: all;
+  transition: fill 0.18s ease, stroke 0.18s ease;
 }
 
 .organ-label {
@@ -486,14 +485,19 @@
   text-anchor: middle;
   pointer-events: none;
   opacity: 0.9;
+  paint-order: stroke;
+  stroke: var(--panel);
+  stroke-width: 3px;
+  stroke-linejoin: round;
 }
 
-.organ-hotspot:hover :is(ellipse, rect, circle, path):not(.signal-dot):not(.organ-detail),
-.organ-hotspot:focus-visible :is(ellipse, rect, circle, path):not(.signal-dot):not(.organ-detail) {
+.organ-hotspot:hover .organ-halo,
+.organ-hotspot:focus-visible .organ-halo {
+  fill: var(--probe-blue-dim);
   stroke: var(--probe-blue);
 }
 
-.organ-hotspot.is-hovered :is(ellipse, rect, circle, path):not(.signal-dot):not(.organ-detail) {
+.organ-hotspot.is-hovered .organ-halo {
   fill: var(--probe-blue-dim);
   stroke: var(--probe-blue);
   stroke-width: 2;
@@ -512,7 +516,7 @@
   50% { transform: scale(1.05); }
 }
 
-.organ-hotspot.is-correct :is(ellipse, rect, circle, path):not(.signal-dot):not(.organ-detail) {
+.organ-hotspot.is-correct .organ-halo {
   fill: var(--probe-blue-dim);
   stroke: var(--probe-blue);
   stroke-width: 2.5;
@@ -559,9 +563,10 @@
   100% { opacity: 0; transform: scale(1.9); }
 }
 
-.organ-hotspot.is-miss :is(ellipse, rect, circle, path):not(.signal-dot):not(.organ-detail) {
-  fill: #d3e3f0;
+.organ-hotspot.is-miss .organ-halo {
+  fill: rgba(0, 0, 0, 0.06);
   stroke: var(--graphite);
+  stroke-width: 2;
 }
 
 @media (prefers-reduced-motion: no-preference) {
@@ -579,7 +584,7 @@
   85% { transform: translateX(-1.5px); }
 }
 
-.organ-hotspot.is-hint :is(ellipse, rect, circle, path):not(.signal-dot):not(.organ-detail) {
+.organ-hotspot.is-hint .organ-halo {
   stroke: var(--probe-rose);
   stroke-width: 2.5;
   stroke-dasharray: 3 2;

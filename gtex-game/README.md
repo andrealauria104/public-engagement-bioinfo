@@ -17,7 +17,7 @@ npm run preview   # serve the production build locally
 
 - **Intro**: three short click-through slides (genes vs. tissues, what GTEx is, how to play) with Next / Back / Skip, ending on a Start button. The language switch is already available here; "Play again" skips the intro.
 - **Gene tray** (left): the current round's gene, drag it onto the tissue map (mouse or touch - implemented with pointer events, not native HTML5 drag-and-drop, so it works on touchscreens). Tab + Enter also works for keyboard-only play.
-- **Anatomy stage** (center): a hand-drawn body figure with 10 organ hotspots. A correct drop pulses the organ and reveals a density of "signal dots" scaled to that gene's real mean expression there; a miss shows a dashed outline on the organ where the gene actually belongs. A short synthesized chime/buzz plays on drop (Web Audio, no audio assets); the speaker icon in the header mutes it, remembered across reloads.
+- **Anatomy stage** (center): a cartoon skeleton with 10 illustrated organ hotspots (placement in `src/components/anatomyLayout.js`). A correct drop pulses the organ and reveals a density of "signal dots" scaled to that gene's real mean expression there; a miss shows a dashed halo around the organ where the gene actually belongs. A short synthesized chime/buzz plays on drop (Web Audio, no audio assets); the speaker icon in the header mutes it, remembered across reloads.
 - **UMAP readout** (right): a live Plotly scatter plot recoloring by the current gene's expression across all real samples, so the visual result of a drop is backed by an actual expression pattern, not a canned animation.
 - Ten rounds = ten tissues, one random marker gene per tissue, full coverage each playthrough. Ends on an accuracy summary with "play again."
 
@@ -30,9 +30,24 @@ npm run preview   # serve the production build locally
 - Reads from `gtex-data/results/gtex.summarized.experiment.rds` (not checked in - see `gtex-data/` for the upstream preprocessing scripts and raw GTEx files, which are gitignored due to size).
 
 `src/data/generateData.js` still contains the original deterministic synthetic generator (seeded PRNG, same shape) as an offline/dev fallback - `src/data/loadRealData.js` is what the app actually uses, merging the real JSON with the shared tissue color/organ metadata in `generateData.js`.
+
+## Artwork
+
+The full-resolution organ and skeleton illustrations live in `assets-src/body_organs/` (Italian file names, outside `public/` so they are not shipped). The app uses web-sized copies in `src/assets/organs/`, named by tissue (`brain.png`, `kidney.png`, ..., `skeleton.png`): each is trimmed to its visible pixels and scaled to a 480 px longest side (skeleton: 1000 px). The organs, which use flat colours, are also reduced to a 256-colour palette (~5-10 KB each); the skeleton keeps full colour because its gradients band. To regenerate after editing a master (needs Pillow):
+
+```python
+from PIL import Image
+im = Image.open("assets-src/body_organs/Cuore.png").convert("RGBA")
+im = im.crop(im.getchannel("A").getbbox())
+im.thumbnail((480, 480), Image.LANCZOS)
+im.quantize(256, method=Image.FASTOCTREE, dither=Image.NONE).save("src/assets/organs/heart.png", optimize=True)
+```
+
+If an image's aspect ratio changes, update its `w`/`h` in `anatomyLayout.js`.
+
 ## Stack
 
-React 19 + Vite, Plotly.js for the UMAP plots, inline SVG for the anatomy diagram, no CSS framework (hand-written design tokens in `src/styles/tokens.css`). No backend - the production build is a static, offline-capable bundle.
+React 19 + Vite, Plotly.js for the UMAP plots, an inline SVG anatomy stage layering PNG illustrations, no CSS framework (hand-written design tokens in `src/styles/tokens.css`). No backend - the production build is a static, offline-capable bundle.
 
 ## Accessibility / design notes
 
