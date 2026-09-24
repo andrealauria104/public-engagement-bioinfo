@@ -1,5 +1,6 @@
 import { useState } from "react";
 import { useI18n } from "../i18n/LanguageContext";
+import InfoTip from "./InfoTip";
 
 export default function SpecimenTray({ gene, stats, onPointerDownCard, disabled, roundNumber, roundLength, correctSoFar }) {
   const [open, setOpen] = useState(false);
@@ -30,15 +31,20 @@ export default function SpecimenTray({ gene, stats, onPointerDownCard, disabled,
       <div className="hint">{t("dragHint")}</div>
 
       <div className="reveal">
-        <button
-          className="reveal-toggle"
-          disabled={!canReveal}
-          aria-expanded={open}
-          onClick={() => canReveal && setOpen((v) => !v)}
-        >
-          <span>{t("signalPreview")}</span>
-          <span className="reveal-toggle__chevron" aria-hidden="true">▸</span>
-        </button>
+        <div className="reveal__head">
+          <button
+            className="reveal-toggle"
+            disabled={!canReveal}
+            aria-expanded={open}
+            onClick={() => canReveal && setOpen((v) => !v)}
+          >
+            <span>{t("signalPreview")}</span>
+            <span className="reveal-toggle__chevron" aria-hidden="true">▸</span>
+          </button>
+          <InfoTip label={t("aboutPlot")}>
+            <p>{t("signalPreviewInfo")}</p>
+          </InfoTip>
+        </div>
 
         {!canReveal && <div className="reveal-hint">{t("revealHint")}</div>}
 

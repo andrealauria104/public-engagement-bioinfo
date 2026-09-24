@@ -58,6 +58,12 @@ export const STRINGS = {
     introBack: "Back",
     introSkip: "Skip intro",
     startGame: "Start",
+    aboutPlot: "What am I looking at?",
+    umapTissueInfoP1: "Each dot is one real tissue sample. UMAP compresses the activity of thousands of genes into just two dimensions, so samples with similar gene activity end up close together.",
+    umapTissueInfoP2: "Samples from the same tissue form clusters, colored here by tissue. Hover an organ to highlight its cluster. The axes have no units: only the distances between dots matter.",
+    umapExpressionInfoP1: "Same dots, same positions as the tissue map, but now colored by how active the current gene is in each sample (log2 CPM+1: yellow = high, purple = low).",
+    umapExpressionInfoP2: "If the bright dots sit in a single cluster, the gene is a marker for that tissue.",
+    signalPreviewInfo: "Average activity of the current gene in each tissue (log2 CPM+1), from highest to lowest.",
   },
   it: {
     appTitle: "Signal Match",
@@ -107,6 +113,12 @@ export const STRINGS = {
     introBack: "Indietro",
     introSkip: "Salta l'introduzione",
     startGame: "Inizia",
+    aboutPlot: "Cosa sto guardando?",
+    umapTissueInfoP1: "Ogni punto è un vero campione di tessuto. La UMAP riassume l'attività di migliaia di geni in sole due dimensioni, così i campioni con un'attività genica simile finiscono vicini.",
+    umapTissueInfoP2: "I campioni dello stesso tessuto formano dei gruppi, colorati qui per tessuto. Passa sopra un organo per evidenziarne il gruppo. Gli assi non hanno unità: contano solo le distanze tra i punti.",
+    umapExpressionInfoP1: "Stessi punti, stesse posizioni della mappa dei tessuti, ma ora colorati in base a quanto è attivo il gene corrente in ogni campione (log2 CPM+1: giallo = alto, viola = basso).",
+    umapExpressionInfoP2: "Se i punti luminosi stanno in un solo gruppo, il gene è un marcatore di quel tessuto.",
+    signalPreviewInfo: "Attività media del gene corrente in ciascun tessuto (log2 CPM+1), dalla più alta alla più bassa.",
   },
   fr: {
     appTitle: "Signal Match",
@@ -156,6 +168,12 @@ export const STRINGS = {
     introBack: "Retour",
     introSkip: "Passer l'intro",
     startGame: "Commencer",
+    aboutPlot: "Qu'est-ce que je regarde ?",
+    umapTissueInfoP1: "Chaque point est un véritable échantillon de tissu. La UMAP résume l'activité de milliers de gènes en seulement deux dimensions : les échantillons à l'activité génique similaire se retrouvent proches.",
+    umapTissueInfoP2: "Les échantillons d'un même tissu forment des groupes, colorés ici par tissu. Survolez un organe pour mettre son groupe en évidence. Les axes n'ont pas d'unité : seules les distances entre les points comptent.",
+    umapExpressionInfoP1: "Mêmes points, mêmes positions que la carte des tissus, mais colorés selon l'activité du gène actuel dans chaque échantillon (log2 CPM+1 : jaune = élevée, violet = faible).",
+    umapExpressionInfoP2: "Si les points lumineux se trouvent dans un seul groupe, le gène est un marqueur de ce tissu.",
+    signalPreviewInfo: "Activité moyenne du gène actuel dans chaque tissu (log2 CPM+1), de la plus élevée à la plus faible.",
   },
 };
 

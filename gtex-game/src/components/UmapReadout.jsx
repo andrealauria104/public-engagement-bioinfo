@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import Plotly from "plotly.js-dist-min";
 import { useI18n } from "../i18n/LanguageContext";
+import InfoTip from "./InfoTip";
 
 // Perceptually-uniform, colorblind-safe sequential scale (viridis) for the
 // continuous expression readout -- distinct from the categorical tissue
@@ -91,7 +92,13 @@ export default function UmapReadout({ mode, samples, tissueOrder, tissueColors, 
 
   return (
     <div className="panel umap-panel">
-      <div className="eyebrow">{isExpression ? `${t("expressionSignalTitle")}${gene ? ` — ${gene.symbol}` : ""}` : t("tissueClustersTitle")}</div>
+      <div className="umap-panel__head">
+        <div className="eyebrow">{isExpression ? `${t("expressionSignalTitle")}${gene ? ` — ${gene.symbol}` : ""}` : t("tissueClustersTitle")}</div>
+        <InfoTip label={t("aboutPlot")}>
+          <p>{t(isExpression ? "umapExpressionInfoP1" : "umapTissueInfoP1")}</p>
+          <p>{t(isExpression ? "umapExpressionInfoP2" : "umapTissueInfoP2")}</p>
+        </InfoTip>
+      </div>
       <div ref={ref} className="umap-plot" />
     </div>
   );
