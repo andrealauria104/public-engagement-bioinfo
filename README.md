@@ -8,8 +8,15 @@ Interactive tools for public engagement built around bioinformatics data - makin
 - **`gtex-data/`** - R preprocessing pipeline that turns raw GTEx v8 RNA-seq data into the small dataset `gtex-game` bundles (`gtex-data/src/exportGameData.R`). Raw/intermediate files (`data/`, `results/`) are gitignored - several GB, not meant for version control.
 - **`gtex-demo/`** - the earlier single-file HTML/React prototype that preceded Signal Match (search a gene, drag it onto a tissue list). Superseded, kept for reference.
 - **`draft/`** - the original build strategy document `gtex-demo/` and `gtex-game/` were both built from.
+- **`site/`** - the landing page published at the site root, with a button for each app.
 
 More projects will be added here as sibling folders as this collection grows.
+
+## Live site
+
+https://andrealauria104.github.io/public-engagement-bioinfo/
+
+Published to GitHub Pages on pushes to `main` that touch `gtex-game/`, `site/` or the workflow, by `.github/workflows/deploy-pages.yml`. The landing page (`site/`) is at the root and each app is served under its folder name, e.g. Signal Match at `/gtex-game/`.
 
 ## Quick start
 

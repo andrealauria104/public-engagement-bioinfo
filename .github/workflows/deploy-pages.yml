@@ -1,11 +1,13 @@
-name: Deploy Signal Match to GitHub Pages
+name: Deploy to GitHub Pages
 
+# Each project is served under /<folder>/; site/ holds the root landing page.
 on:
   push:
     branches: [main]
     paths:
       - 'gtex-game/**'
-      - '.github/workflows/deploy-gtex-game.yml'
+      - 'site/**'
+      - '.github/workflows/deploy-pages.yml'
   workflow_dispatch:
 
 permissions:
@@ -37,11 +39,17 @@ jobs:
         working-directory: gtex-game
         run: npm run build
 
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp -r site/. _site/
+          cp -r gtex-game/dist _site/gtex-game
+
       - uses: actions/configure-pages@v5
 
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: gtex-game/dist
+          path: _site
 
   deploy:
     needs: build
