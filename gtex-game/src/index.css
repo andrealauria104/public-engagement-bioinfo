@@ -491,7 +491,7 @@
 }
 
 .organ-label-dot {
-  font-size: 13px;
+  font-size: 17px;
 }
 
 .organ-hotspot:hover .organ-halo,
@@ -632,6 +632,36 @@
   align-items: center;
   justify-content: space-between;
   gap: var(--space-2);
+}
+
+.umap-panel__controls {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+}
+
+/* Same pill look as the language switch buttons, with its own outline. */
+.names-toggle {
+  padding: 4px 10px;
+  border-radius: 999px;
+  border: 1px solid var(--panel-border);
+  background: var(--panel-raised);
+  color: var(--ink-dim);
+  font-weight: 700;
+  font-size: 12px;
+  letter-spacing: 0.03em;
+  cursor: pointer;
+}
+
+.names-toggle:hover {
+  color: var(--probe-blue);
+}
+
+.names-toggle[aria-pressed="true"] {
+  background: var(--panel);
+  border-color: var(--probe-blue);
+  color: var(--probe-blue);
+  box-shadow: 0 1px 3px rgba(30, 39, 51, 0.15);
 }
 
 .umap-plot {
