@@ -29,6 +29,10 @@ npm run preview   # serve the production build locally
 - Subsamples ~90 samples/tissue and runs `uwot::umap` jointly across all of them for the 2D layout.
 - Reads from `gtex-data/results/gtex.summarized.experiment.rds` (not checked in - see `gtex-data/` for the upstream preprocessing scripts and raw GTEx files, which are gitignored due to size).
 
+Please cite GTEx when reusing this data: The GTEx Consortium, "The GTEx Consortium atlas of genetic regulatory effects across human tissues", *Science* 369(6509):1318-1330 (2020), [doi:10.1126/science.aaz1776](https://doi.org/10.1126/science.aaz1776). The game credits it on the second intro slide.
+
+> The Genotype-Tissue Expression (GTEx) Project was supported by the Common Fund of the Office of the Director of the National Institutes of Health, and by NCI, NHGRI, NHLBI, NIDA, NIMH, and NINDS. The data used in this game were obtained from the GTEx Portal (v8).
+
 `src/data/generateData.js` still contains the original deterministic synthetic generator (seeded PRNG, same shape) as an offline/dev fallback - `src/data/loadRealData.js` is what the app actually uses, merging the real JSON with the shared tissue color/organ metadata in `generateData.js`.
 
 ## Artwork

@@ -3,7 +3,7 @@ import { useI18n } from "../i18n/LanguageContext";
 
 const SLIDES = [
   { title: "intro1Title", body: "intro1Body" },
-  { title: "intro2Title", body: "intro2Body" },
+  { title: "intro2Title", body: "intro2Body", source: "intro2Source" },
   { title: "intro3Title", steps: ["intro3Step1", "intro3Step2", "intro3Step3", "intro3Step4"] },
 ];
 
@@ -33,6 +33,7 @@ export default function IntroScreen({ onStart }) {
         ) : (
           <p className="intro-screen__body">{t(slide.body)}</p>
         )}
+        {slide.source && <p className="intro-screen__source">{t(slide.source)}</p>}
       </div>
 
       <div className="intro-dots" aria-hidden="true">
