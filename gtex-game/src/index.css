@@ -396,6 +396,10 @@
   border-color: var(--probe-rose);
 }
 
+.toast--partial {
+  border-color: var(--probe-amber);
+}
+
 .toast__headline {
   font-size: 16px;
   font-weight: 700;
@@ -409,10 +413,23 @@
   color: #a8578a;
 }
 
+.toast--partial .toast__headline {
+  color: var(--probe-amber-ink);
+}
+
 .toast__detail {
   margin-top: 5px;
   font-size: 14px;
   color: var(--ink-dim);
+  line-height: 1.5;
+}
+
+.toast__blurb {
+  margin: 8px 0 0;
+  padding-top: 8px;
+  border-top: 1px solid var(--panel-border);
+  font-size: var(--text-sm);
+  color: var(--ink);
   line-height: 1.5;
 }
 
@@ -585,6 +602,12 @@
   30% { transform: translateX(-3px); }
   60% { transform: translateX(3px); }
   85% { transform: translateX(-1.5px); }
+}
+
+.organ-hotspot.is-partial .organ-halo {
+  fill: var(--probe-amber-dim);
+  stroke: var(--probe-amber);
+  stroke-width: 2.5;
 }
 
 .organ-hotspot.is-hint .organ-halo {

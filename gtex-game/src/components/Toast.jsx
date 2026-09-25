@@ -1,30 +1,43 @@
 import { useI18n } from "../i18n/LanguageContext";
 
 export default function Toast({ result, onNext }) {
-  const { t, tTissue } = useI18n();
+  const { t, tTissue, tTissueIn, tGene, fmtNum } = useI18n();
 
   if (!result) return null;
 
-  const { gene, correct, correctTissue, droppedTissue, droppedMean, bestTissue, bestMean } = result;
+  const { gene, correct, partial, correctTissue, droppedTissue, droppedMean, bestTissue, bestMean } = result;
+  const outcome = correct ? "correct" : partial ? "partial" : "miss";
+  const blurb = tGene(gene.symbol);
+
+  let headline;
+  let detail;
+  if (correct) {
+    headline = t("toastHeadlineCorrect", { symbol: gene.symbol, inTissue: tTissueIn(correctTissue) });
+    detail = t("toastDetailCorrect", { inTissue: tTissueIn(correctTissue), value: fmtNum(droppedMean) });
+  } else if (partial) {
+    headline = t("toastHeadlinePartial", { symbol: gene.symbol, inTissue: tTissueIn(droppedTissue) });
+    detail = t("toastDetailPartial", {
+      inTissue: tTissueIn(droppedTissue),
+      value: fmtNum(droppedMean),
+      inCorrectTissue: tTissueIn(correctTissue),
+      bestMean: fmtNum(bestMean),
+    });
+  } else {
+    headline = t("toastHeadlineMiss", { symbol: gene.symbol, tissue: tTissue(droppedTissue) });
+    detail = t("toastDetailMiss", {
+      symbol: gene.symbol,
+      inBestTissue: tTissueIn(bestTissue),
+      bestMean: fmtNum(bestMean),
+      correctTissue: tTissue(correctTissue),
+    });
+  }
 
   return (
-    <div className={"toast" + (correct ? " toast--correct" : " toast--miss")} role="status">
+    <div className={`toast toast--${outcome}`} role="status">
       <div className="toast__body">
-        <div className="toast__headline mono">
-          {correct
-            ? t("toastHeadlineCorrect", { symbol: gene.symbol, tissue: tTissue(correctTissue) })
-            : t("toastHeadlineMiss", { symbol: gene.symbol, tissue: tTissue(droppedTissue) })}
-        </div>
-        <div className="toast__detail">
-          {correct
-            ? t("toastDetailCorrect", { tissue: tTissue(correctTissue), value: droppedMean.toFixed(2) })
-            : t("toastDetailMiss", {
-                symbol: gene.symbol,
-                bestTissue: tTissue(bestTissue),
-                bestMean: bestMean.toFixed(2),
-                correctTissue: tTissue(correctTissue),
-              })}
-        </div>
+        <div className="toast__headline mono">{headline}</div>
+        <div className="toast__detail">{detail}</div>
+        {blurb && <p className="toast__blurb">{blurb}</p>}
       </div>
       <button className="toast__next" onClick={onNext} autoFocus>
         {t("nextGene")}

@@ -28,13 +28,13 @@ const TISSUES = [
   { name: "Liver", color: "#882255", organ: "liver", markers: [["ALB", "Albumin"], ["APOB", "Apolipoprotein B"], ["CYP3A4", "Cytochrome P450 3A4"], ["TTR", "Transthyretin"], ["SERPINA1", "Alpha-1 Antitrypsin"]] },
   { name: "Brain", color: "#332288", organ: "brain", markers: [["GFAP", "Glial Fibrillary Acidic Protein"], ["SNAP25", "Synaptosome Assoc. Protein 25"], ["MBP", "Myelin Basic Protein"], ["SYT1", "Synaptotagmin 1"], ["RBFOX3", "RNA Binding Fox-1 Homolog 3"]] },
   { name: "Heart", color: "#CC6677", organ: "heart", markers: [["MYH6", "Myosin Heavy Chain 6"], ["TNNT2", "Troponin T2, Cardiac"], ["NPPA", "Natriuretic Peptide A"], ["ACTC1", "Actin, Cardiac Muscle 1"], ["TNNI3", "Troponin I3, Cardiac"]] },
-  { name: "Kidney", color: "#44AA99", organ: "kidney", markers: [["UMOD", "Uromodulin"], ["AQP2", "Aquaporin 2"], ["SLC12A1", "Na-K-Cl Cotransporter"], ["NPHS2", "Podocin"], ["CUBN", "Cubilin"]] },
+  { name: "Kidney", color: "#44AA99", organ: "kidney", markers: [["UMOD", "Uromodulin"], ["AQP2", "Aquaporin 2"], ["SLC12A1", "Na-K-Cl Cotransporter"], ["NPHS2", "Podocin"], ["REN", "Renin"]] },
   { name: "Lung", color: "#88CCEE", organ: "lung", markers: [["SFTPC", "Surfactant Protein C"], ["SFTPB", "Surfactant Protein B"], ["SCGB1A1", "Secretoglobin 1A1"], ["NAPSA", "Napsin A"], ["AGER", "Advanced Glycosylation End-Product Receptor"]] },
   { name: "Pancreas", color: "#E69F00", organ: "pancreas", markers: [["INS", "Insulin"], ["GCG", "Glucagon"], ["PRSS1", "Trypsinogen"], ["AMY2A", "Pancreatic Amylase"], ["SST", "Somatostatin"]] },
   { name: "Muscle", color: "#999933", organ: "muscle", markers: [["ACTA1", "Actin, Skeletal Muscle"], ["MYH1", "Myosin Heavy Chain 1"], ["TTN", "Titin"], ["CKM", "Creatine Kinase, Muscle"], ["DES", "Desmin"]] },
-  { name: "Adipose", color: "#DDCC77", organ: "adipose", markers: [["ADIPOQ", "Adiponectin"], ["LEP", "Leptin"], ["FABP4", "Fatty Acid Binding Protein 4"], ["PLIN1", "Perilipin 1"], ["UCP1", "Uncoupling Protein 1"]] },
-  { name: "Blood", color: "#AA4499", organ: "blood", markers: [["HBB", "Hemoglobin Beta"], ["HBA1", "Hemoglobin Alpha 1"], ["GYPA", "Glycophorin A"], ["CD3D", "CD3d Molecule"], ["CD19", "CD19 Molecule"]] },
-  { name: "Thyroid", color: "#117733", organ: "thyroid", markers: [["TG", "Thyroglobulin"], ["TPO", "Thyroid Peroxidase"], ["TSHR", "Thyroid Stimulating Hormone Receptor"], ["SLC5A5", "Sodium/Iodide Cotransporter"], ["PAX8", "Paired Box 8"]] },
+  { name: "Adipose", color: "#DDCC77", organ: "adipose", markers: [["ADIPOQ", "Adiponectin"], ["LEP", "Leptin"], ["FABP4", "Fatty Acid Binding Protein 4"], ["PLIN1", "Perilipin 1"], ["LIPE", "Hormone-Sensitive Lipase"]] },
+  { name: "Blood", color: "#AA4499", organ: "blood", markers: [["HBB", "Hemoglobin Beta"], ["HBA1", "Hemoglobin Alpha 1"], ["ALAS2", "Aminolevulinate Synthase 2"], ["SELL", "L-Selectin"], ["CD19", "CD19 Molecule"]] },
+  { name: "Thyroid", color: "#117733", organ: "thyroid", markers: [["TG", "Thyroglobulin"], ["TPO", "Thyroid Peroxidase"], ["TSHR", "Thyroid Stimulating Hormone Receptor"], ["IYD", "Iodotyrosine Deiodinase"], ["PAX8", "Paired Box 8"]] },
 ];
 
 // Presentation metadata (colors, organ keys, tissue order) shared by both the

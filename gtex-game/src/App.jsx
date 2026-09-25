@@ -47,7 +47,7 @@ export default function App() {
       if (!result) return;
       setHoveredTissue(null);
       if (!muted) {
-        if (result.correct) playCorrectSound();
+        if (result.correct || result.partial) playCorrectSound();
         else playIncorrectSound();
       }
     },
@@ -98,10 +98,10 @@ export default function App() {
 
   const resultState = useMemo(() => {
     if (!lastResult) return null;
-    const hintTissue = lastResult.correct ? lastResult.correctTissue : lastResult.bestTissue;
+    const hintTissue = lastResult.correct || lastResult.partial ? lastResult.correctTissue : lastResult.bestTissue;
     const intensity = lastResult.correct ? lastResult.droppedMean / MAX_SIGNAL : 0;
     return {
-      status: lastResult.correct ? "correct" : "incorrect",
+      status: lastResult.correct ? "correct" : lastResult.partial ? "partial" : "incorrect",
       tissue: lastResult.droppedTissue,
       hintTissue,
       intensity,
@@ -125,7 +125,7 @@ export default function App() {
               disabled={!!lastResult}
               roundNumber={roundNumber}
               roundLength={roundLength}
-              correctSoFar={!!lastResult?.correct}
+              canReveal={!!(lastResult?.correct || lastResult?.partial)}
             />
 
             <AnatomyStage

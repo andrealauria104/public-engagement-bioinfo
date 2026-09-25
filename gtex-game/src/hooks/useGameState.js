@@ -49,6 +49,8 @@ export function useGameState({ genes, samples, tissueOrder }) {
       const stats = meanByTissue(currentGene, samples, tissueOrder);
       const best = stats.reduce((a, b) => (b.mean > a.mean ? b : a));
       const correct = droppedTissue === currentGene.tissue;
+      // Also clearly expressed there (thresholds applied in exportGameData.R): half credit.
+      const partial = !correct && (currentGene.secondary ?? []).includes(droppedTissue);
       const droppedMean = stats.find((s) => s.tissue === droppedTissue)?.mean ?? 0;
 
       const result = {
@@ -56,6 +58,7 @@ export function useGameState({ genes, samples, tissueOrder }) {
         droppedTissue,
         correctTissue: currentGene.tissue,
         correct,
+        partial,
         droppedMean,
         bestTissue: best.tissue,
         bestMean: best.mean,
@@ -64,6 +67,7 @@ export function useGameState({ genes, samples, tissueOrder }) {
       setLastResult(result);
       setHistory((h) => [...h, result]);
       if (correct) setScore((s) => s + 1);
+      else if (partial) setScore((s) => s + 0.5);
 
       return result;
     },

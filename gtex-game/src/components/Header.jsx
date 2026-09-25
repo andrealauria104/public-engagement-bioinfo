@@ -4,7 +4,7 @@ import { LANGUAGES } from "../i18n/translations";
 
 export default function Header({ roundNumber, roundLength, score, phase, muted, onToggleMuted }) {
   const [showInfo, setShowInfo] = useState(false);
-  const { lang, setLang, t } = useI18n();
+  const { lang, setLang, t, fmtScore } = useI18n();
 
   return (
     <header className="app-header">
@@ -18,10 +18,10 @@ export default function Header({ roundNumber, roundLength, score, phase, muted, 
           <>
             <span>{t("round", { round: roundNumber, total: roundLength })}</span>
             <span className="app-header__dot" aria-hidden="true">·</span>
-            <span>{t("score", { score })}</span>
+            <span>{t("score", { score: fmtScore(score) })}</span>
           </>
         ) : phase === "intro" ? null : (
-          <span>{t("finalScore", { score, total: roundLength })}</span>
+          <span>{t("finalScore", { score: fmtScore(score), total: roundLength })}</span>
         )}
       </div>
 

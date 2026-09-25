@@ -20,6 +20,19 @@ SAMPLES_PER_TISSUE <- 90
 N_VARIABLE_GENES <- 2000
 OUT_PATH <- "../gtex-game/src/data/gtex_real.json"
 
+# Specificity rules (means are log2(TPM+1) over all target-tissue samples).
+# A marker must be clearly expressed and beat the runner-up tissue by >= 2x.
+MIN_TOP_MEAN <- 3
+MIN_LEAD <- 1
+# Other tissues within SECONDARY_WINDOW of the top (>= 1/4 of peak) and above
+# MIN_SECONDARY_MEAN are exported as `secondary`: the game gives half credit there.
+SECONDARY_WINDOW <- 2
+MIN_SECONDARY_MEAN <- 3
+
+# SCREEN=1 Rscript src/exportGameData.R: print the most tissue-specific genes per
+# tissue (to pick markers) and stop without writing anything.
+SCREEN <- nzchar(Sys.getenv("SCREEN"))
+
 # tissue name used in the game -> real SMTS string in GTEx sample attributes
 TARGET_TISSUES <- c(
   Liver    = "Liver",
@@ -39,13 +52,13 @@ MARKER_GENES <- list(
   Liver    = list(c("ALB", "Albumin"), c("APOB", "Apolipoprotein B"), c("CYP3A4", "Cytochrome P450 3A4"), c("TTR", "Transthyretin"), c("SERPINA1", "Alpha-1 Antitrypsin")),
   Brain    = list(c("GFAP", "Glial Fibrillary Acidic Protein"), c("SNAP25", "Synaptosome Assoc. Protein 25"), c("MBP", "Myelin Basic Protein"), c("SYT1", "Synaptotagmin 1"), c("RBFOX3", "RNA Binding Fox-1 Homolog 3")),
   Heart    = list(c("MYH6", "Myosin Heavy Chain 6"), c("TNNT2", "Troponin T2, Cardiac"), c("NPPA", "Natriuretic Peptide A"), c("ACTC1", "Actin, Cardiac Muscle 1"), c("TNNI3", "Troponin I3, Cardiac")),
-  Kidney   = list(c("UMOD", "Uromodulin"), c("AQP2", "Aquaporin 2"), c("SLC12A1", "Na-K-Cl Cotransporter"), c("NPHS2", "Podocin"), c("CUBN", "Cubilin")),
+  Kidney   = list(c("UMOD", "Uromodulin"), c("AQP2", "Aquaporin 2"), c("SLC12A1", "Na-K-Cl Cotransporter"), c("NPHS2", "Podocin"), c("REN", "Renin")),
   Lung     = list(c("SFTPC", "Surfactant Protein C"), c("SFTPB", "Surfactant Protein B"), c("SCGB1A1", "Secretoglobin 1A1"), c("NAPSA", "Napsin A"), c("AGER", "Advanced Glycosylation End-Product Receptor")),
   Pancreas = list(c("INS", "Insulin"), c("GCG", "Glucagon"), c("PRSS1", "Trypsinogen"), c("AMY2A", "Pancreatic Amylase"), c("SST", "Somatostatin")),
   Muscle   = list(c("ACTA1", "Actin, Skeletal Muscle"), c("MYH1", "Myosin Heavy Chain 1"), c("TTN", "Titin"), c("CKM", "Creatine Kinase, Muscle"), c("DES", "Desmin")),
-  Adipose  = list(c("ADIPOQ", "Adiponectin"), c("LEP", "Leptin"), c("FABP4", "Fatty Acid Binding Protein 4"), c("PLIN1", "Perilipin 1"), c("UCP1", "Uncoupling Protein 1")),
-  Blood    = list(c("HBB", "Hemoglobin Beta"), c("HBA1", "Hemoglobin Alpha 1"), c("GYPA", "Glycophorin A"), c("CD3D", "CD3d Molecule"), c("CD19", "CD19 Molecule")),
-  Thyroid  = list(c("TG", "Thyroglobulin"), c("TPO", "Thyroid Peroxidase"), c("TSHR", "Thyroid Stimulating Hormone Receptor"), c("SLC5A5", "Sodium/Iodide Cotransporter"), c("PAX8", "Paired Box 8"))
+  Adipose  = list(c("ADIPOQ", "Adiponectin"), c("LEP", "Leptin"), c("FABP4", "Fatty Acid Binding Protein 4"), c("PLIN1", "Perilipin 1"), c("LIPE", "Hormone-Sensitive Lipase")),
+  Blood    = list(c("HBB", "Hemoglobin Beta"), c("HBA1", "Hemoglobin Alpha 1"), c("ALAS2", "Aminolevulinate Synthase 2"), c("SELL", "L-Selectin"), c("CD19", "CD19 Molecule")),
+  Thyroid  = list(c("TG", "Thyroglobulin"), c("TPO", "Thyroid Peroxidase"), c("TSHR", "Thyroid Stimulating Hormone Receptor"), c("IYD", "Iodotyrosine Deiodinase"), c("PAX8", "Paired Box 8"))
 )
 
 cat("Loading SummarizedExperiment...\n")
@@ -65,29 +78,64 @@ print(table(tissue_of_sample))
 
 log_tpm_all <- log2(assay(se10, "tpm") + 1)
 
+pick_row <- function(rows, mat) {
+  # if a symbol maps to multiple Ensembl IDs, use the one with highest overall expression
+  if (length(rows) > 1) rows[which.max(rowSums(mat[rows, , drop = FALSE]))] else rows
+}
+
 validate_gene <- function(symbol, assigned_tissue) {
   rows <- which(gene_symbol == symbol)
   if (length(rows) == 0) {
     return(list(symbol = symbol, assigned = assigned_tissue, ok = FALSE, reason = "not found in gene table"))
   }
-  # if a symbol maps to multiple Ensembl IDs, use the one with highest overall expression
-  if (length(rows) > 1) {
-    totals <- rowSums(log_tpm_all[rows, , drop = FALSE])
-    rows <- rows[which.max(totals)]
-  }
-  vals <- log_tpm_all[rows, ]
+  vals <- log_tpm_all[pick_row(rows, log_tpm_all), ]
   means <- tapply(vals, tissue_of_sample, mean)
   means <- means[names(TARGET_TISSUES)]
-  best_tissue <- names(which.max(means))
-  ok <- identical(best_tissue, assigned_tissue)
   sorted <- sort(means, decreasing = TRUE)
-  runner_up <- if (ok) names(sorted)[2] else best_tissue
+  top_mean <- sorted[[1]]
+  lead <- sorted[[1]] - sorted[[2]]
+  is_top <- identical(names(sorted)[1], assigned_tissue)
+  reason <- if (!is_top) {
+    sprintf("top tissue is %s", names(sorted)[1])
+  } else if (top_mean < MIN_TOP_MEAN) {
+    sprintf("top mean %.2f < %g", top_mean, MIN_TOP_MEAN)
+  } else if (lead < MIN_LEAD) {
+    sprintf("lead over %s is %.2f < %g", names(sorted)[2], lead, MIN_LEAD)
+  } else {
+    ""
+  }
+  others <- sorted[names(sorted) != assigned_tissue]
+  secondary <- names(others)[others >= top_mean - SECONDARY_WINDOW & others >= MIN_SECONDARY_MEAN]
   list(
-    symbol = symbol, assigned = assigned_tissue, ok = ok,
+    symbol = symbol, assigned = assigned_tissue, ok = reason == "", reason = reason,
     assigned_mean = round(means[[assigned_tissue]], 2),
-    top_tissue = best_tissue, top_mean = round(sorted[[1]], 2),
-    runner_up = runner_up, runner_up_mean = round(sorted[[if (ok) 2 else 1]], 2)
+    top_tissue = names(sorted)[1], top_mean = round(top_mean, 2),
+    runner_up = names(sorted)[2], lead = round(lead, 2),
+    secondary = secondary
   )
+}
+
+## ---- 0. Optional: screen candidate markers ----------------------------------
+
+if (SCREEN) {
+  cat("\nScreening all genes for tissue specificity...\n")
+  tissue_f <- factor(tissue_of_sample, levels = names(TARGET_TISSUES))
+  sums <- log_tpm_all %*% sapply(levels(tissue_f), function(t) as.numeric(tissue_f == t))
+  gene_means <- sweep(sums, 2, as.numeric(table(tissue_f)), "/")
+  top2 <- t(apply(gene_means, 1, function(m) sort(m, decreasing = TRUE)[1:2]))
+  top_t <- colnames(gene_means)[max.col(gene_means, ties.method = "first")]
+  screen <- data.frame(
+    symbol = gene_symbol, tissue = top_t,
+    top_mean = round(top2[, 1], 2), lead = round(top2[, 1] - top2[, 2], 2),
+    stringsAsFactors = FALSE
+  )
+  screen <- screen[screen$top_mean >= MIN_TOP_MEAN & !duplicated(screen$symbol), ]
+  for (tissue in names(TARGET_TISSUES)) {
+    cat(sprintf("\n--- %s ---\n", tissue))
+    s <- screen[screen$tissue == tissue, ]
+    print(head(s[order(-s$lead), ], 25), row.names = FALSE)
+  }
+  quit(save = "no")
 }
 
 cat("\nValidating marker genes against real tissue specificity...\n")
@@ -104,6 +152,9 @@ report <- do.call(rbind, lapply(results, function(r) {
     assigned_mean = ifelse(is.null(r$assigned_mean), NA, r$assigned_mean),
     top_tissue = ifelse(is.null(r$top_tissue), NA, r$top_tissue),
     top_mean = ifelse(is.null(r$top_mean), NA, r$top_mean),
+    lead = ifelse(is.null(r$lead), NA, r$lead),
+    secondary = paste(r$secondary, collapse = ","),
+    reason = r$reason,
     stringsAsFactors = FALSE
   )
 }))
@@ -114,11 +165,12 @@ if (nrow(failed) > 0) {
   cat("\n=== NEEDS REPLACEMENT ===\n")
   print(failed, row.names = FALSE)
   stop(sprintf(
-    "%d marker gene(s) are not the top tissue for their assigned organ in real data. Pick replacement symbols and re-run.",
+    "%d marker gene(s) fail the specificity rules (see reason). Pick replacement symbols (SCREEN <- TRUE helps) and re-run.",
     nrow(failed)
   ))
 }
-cat("\nAll marker genes validated: each is the top-expressing tissue among the 10 targets.\n")
+cat(sprintf("\nAll marker genes validated: top tissue, mean >= %g, lead >= %g.\n", MIN_TOP_MEAN, MIN_LEAD))
+secondary_of <- setNames(lapply(results, `[[`, "secondary"), sapply(results, `[[`, "symbol"))
 
 ## ---- 2. Subsample 90 samples/tissue --------------------------------------
 
@@ -156,14 +208,11 @@ for (tissue in names(MARKER_GENES)) {
   for (pair in MARKER_GENES[[tissue]]) {
     symbol <- pair[1]
     name <- pair[2]
-    rows <- which(gene_symbol == symbol)
-    if (length(rows) > 1) {
-      totals <- rowSums(log_tpm_sub[rows, , drop = FALSE])
-      rows <- rows[which.max(totals)]
-    }
+    rows <- pick_row(which(gene_symbol == symbol), log_tpm_sub)
     vals <- round(log_tpm_sub[rows, ], 3)
     gene_records[[length(gene_records) + 1]] <- list(
       symbol = symbol, name = name, tissue = tissue,
+      secondary = I(secondary_of[[symbol]]),
       data = unname(vals)
     )
   }

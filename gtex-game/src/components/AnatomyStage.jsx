@@ -99,6 +99,7 @@ export default function AnatomyStage({ hoveredTissue, resultState, onOrganActiva
           const isCorrectHit = resultState?.status === "correct" && resultState.tissue === organ.tissue;
           const isHint = resultState && resultState.hintTissue === organ.tissue && !isCorrectHit;
           const isMiss = resultState?.status === "incorrect" && resultState.tissue === organ.tissue;
+          const isPartial = resultState?.status === "partial" && resultState.tissue === organ.tissue;
 
           const className = [
             "organ-hotspot",
@@ -106,6 +107,7 @@ export default function AnatomyStage({ hoveredTissue, resultState, onOrganActiva
             isCorrectHit ? "is-correct" : "",
             isHint ? "is-hint" : "",
             isMiss ? "is-miss" : "",
+            isPartial ? "is-partial" : "",
           ]
             .filter(Boolean)
             .join(" ");

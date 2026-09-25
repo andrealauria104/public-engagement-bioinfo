@@ -13,6 +13,10 @@
   --probe-blue-dim: rgba(0, 114, 178, 0.14);
   --probe-rose: #cc79a7;
   --probe-rose-dim: rgba(204, 121, 167, 0.16);
+  /* Okabe-Ito orange for "partly right"; the darker ink variant keeps text legible on white */
+  --probe-amber: #e69f00;
+  --probe-amber-ink: #9a6200;
+  --probe-amber-dim: rgba(230, 159, 0, 0.18);
 
   /* type -- Arial everywhere, for maximum universal legibility */
   --font-display: Arial, Helvetica, sans-serif;

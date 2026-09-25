@@ -1,5 +1,6 @@
 import { createContext, useCallback, useContext, useMemo, useState } from "react";
-import { STRINGS, TISSUE_NAMES } from "./translations";
+import { STRINGS, TISSUE_IN, TISSUE_NAMES } from "./translations";
+import { GENE_BLURBS } from "../data/geneBlurbs";
 
 const LanguageContext = createContext(null);
 
@@ -41,7 +42,29 @@ export function LanguageProvider({ children }) {
     [lang]
   );
 
-  const value = useMemo(() => ({ lang, setLang, t, tTissue }), [lang, setLang, t, tTissue]);
+  const tTissueIn = useCallback(
+    (tissueKey) => (TISSUE_IN[lang] || TISSUE_IN.en)[tissueKey] ?? tissueKey,
+    [lang]
+  );
+
+  // Locale decimal separator: 11.31 in EN, 11,31 in IT/FR.
+  const fmtNum = useCallback(
+    (n, digits = 2) => new Intl.NumberFormat(lang, { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(n),
+    [lang]
+  );
+
+  // Scores can be fractional (half credit): "7.5" in EN, "7,5" in IT/FR, "8" when whole.
+  const fmtScore = useCallback((n) => new Intl.NumberFormat(lang, { maximumFractionDigits: 1 }).format(n), [lang]);
+
+  const tGene = useCallback((symbol) => {
+    const entry = GENE_BLURBS[symbol];
+    return entry ? entry[lang] ?? entry.en : null;
+  }, [lang]);
+
+  const value = useMemo(
+    () => ({ lang, setLang, t, tTissue, tTissueIn, tGene, fmtNum, fmtScore }),
+    [lang, setLang, t, tTissue, tTissueIn, tGene, fmtNum, fmtScore]
+  );
 
   return <LanguageContext.Provider value={value}>{children}</LanguageContext.Provider>;
 }

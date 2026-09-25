@@ -2,7 +2,7 @@ import { useState } from "react";
 import { useI18n } from "../i18n/LanguageContext";
 import InfoTip from "./InfoTip";
 
-export default function SpecimenTray({ gene, stats, onPointerDownCard, disabled, roundNumber, roundLength, correctSoFar }) {
+export default function SpecimenTray({ gene, stats, onPointerDownCard, disabled, roundNumber, roundLength, canReveal }) {
   const [open, setOpen] = useState(false);
   const { t, tTissue } = useI18n();
 
@@ -10,7 +10,6 @@ export default function SpecimenTray({ gene, stats, onPointerDownCard, disabled,
 
   const sorted = [...stats.byTissue].sort((a, b) => b.mean - a.mean).slice(0, 5);
   const maxMean = sorted[0]?.mean || 1;
-  const canReveal = correctSoFar;
 
   return (
     <div className="panel specimen-tray">
